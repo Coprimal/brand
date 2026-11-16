@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Coprimal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap"
+    />
+    <style>
+      @page { size: 1200px 630px; margin: 0 }
+    </style>
+    <style>
+      /* Brand palette: Coprimal_Brand_Identity.pdf, page 1 */
+      :root {
+        --deep-navy: #11376e;
+        --bright-navy: #225db4;
+        --sky: #73a7e8;
+        --mist: #eaf3ff;
+        --white: #ffffff;
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--deep-navy);
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      #frame {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: var(--deep-navy) url("assets/banner.webp") no-repeat;
+        background-size: auto 112%;
+        background-position: 100% 50%;
+        font-family: "Lato", sans-serif;
+      }
+      /* Horizontal lockup: white symbol + wordmark ("white on dark navy surfaces") */
+      .lockup {
+        position: absolute;
+        left: 96px;
+        top: 200px;
+        display: flex;
+        align-items: center;
+        gap: 26px;
+      }
+      .lockup img {
+        width: 104px;
+        height: 104px;
+        display: block;
+      }
+      .wordmark {
+        margin: 0;
+        font-weight: 700;
+        font-size: 84px;
+        line-height: 1;
+        letter-spacing: -0.005em;
+        color: var(--white);
+      }
+      .tagline {
+        position: absolute;
+        left: 98px;
+        top: 352px;
+        margin: 0;
+        font-weight: 400;
+        font-size: 28px;
+        line-height: 1.2;
+        color: var(--mist);
+      }
+      /* Bottom-right: the banner is deep navy there (bottom-left sits on the light wave) */
+      .url {
+        position: absolute;
+        right: 96px;
+        bottom: 56px;
+        margin: 0;
+        font-weight: 700;
+        font-size: 17px;
+        letter-spacing: 0.08em;
+        color: var(--mist);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="frame">
+      <div class="lockup">
+        <img id="symbol" src="assets/logo_white.png" alt="" />
+        <h1 class="wordmark" data-k="name"></h1>
+      </div>
+      <p class="tagline" data-k="tagline"></p>
+      <p class="url" data-k="url"></p>
+    </div>
+    <script>
+      /* Copy: the three lines of the brief; wordmark cased as in the brand lockup. */
+      const STR = {
+        en: {
+          name: "Coprimal",
+          tagline: "By devs. For devs. Still devs.",
+          url: "coprimal.dev",
+        },
+      };
+      const Q = new URLSearchParams(location.search);
+      const LANG = Object.hasOwn(STR, Q.get("lang")) ? Q.get("lang") : "en";
+      document.documentElement.lang = LANG;
+      for (const el of document.querySelectorAll("[data-k]"))
+        el.textContent = STR[LANG][el.dataset.k];
+      document.getElementById("symbol").alt = STR[LANG].name;
+
+      const FONTS = [
+        { family: "Lato", weight: 400 },
+        { family: "Lato", weight: 700 },
+      ];
+      const FONT_SAMPLE = "Coprimal By devs. For Still coprimal.dev";
+      const ready = (async () => {
+        const bg = new Image();
+        bg.src = getComputedStyle(document.getElementById("frame"))
+          .backgroundImage.slice(5, -2);
+        await Promise.all([
+          bg.decode(),
+          document.getElementById("symbol").decode(),
+          ...FONTS.map(({ family, weight }) =>
+            document.fonts.load(`${weight} 64px "${family}"`, FONT_SAMPLE),
+          ),
+        ]);
+        await document.fonts.ready;
+        const frame = document.getElementById("frame").getBoundingClientRect();
+        for (const el of document.querySelectorAll(".lockup, [data-k]")) {
+          const b = el.getBoundingClientRect();
+          if (b.left < frame.left || b.right > frame.right || b.top < frame.top || b.bottom > frame.bottom)
+            console.warn(`poster: "${el.className}" overflows the frame`);
+        }
+      })();
+      window.__showcase = { ready, width: 1200, height: 630, fonts: FONTS, fontSample: FONT_SAMPLE, lang: LANG };
+    </script>
+  </body>
+</html>
