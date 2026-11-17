@@ -43,7 +43,7 @@
       .lockup {
         position: absolute;
         left: 96px;
-        top: 200px;
+        top: 170px;
         display: flex;
         align-items: center;
         gap: 26px;
@@ -64,12 +64,25 @@
       .tagline {
         position: absolute;
         left: 98px;
-        top: 352px;
+        top: 322px;
         margin: 0;
         font-weight: 400;
         font-size: 28px;
         line-height: 1.2;
         color: var(--mist);
+      }
+      /* Two lines, broken at the colon, so it stays on the plain navy left of the waves */
+      .about {
+        position: absolute;
+        left: 98px;
+        top: 382px;
+        margin: 0;
+        font-weight: 400;
+        font-size: 21px;
+        line-height: 1.45;
+        white-space: pre-line;
+        /* Mist, softened: Sky reads only ~3.4:1 on this navy */
+        color: rgb(234 243 255 / 0.78);
       }
       /* Bottom-right: the banner is deep navy there (bottom-left sits on the light wave) */
       .url {
@@ -91,14 +104,16 @@
         <h1 class="wordmark" data-k="name"></h1>
       </div>
       <p class="tagline" data-k="tagline"></p>
+      <p class="about" data-k="about"></p>
       <p class="url" data-k="url"></p>
     </div>
     <script>
-      /* Copy: the three lines of the brief; wordmark cased as in the brand lockup. */
+      /* Copy: wordmark cased as in the brand lockup; tagline, about line and URL as given by the user. */
       const STR = {
         en: {
           name: "Coprimal",
           tagline: "By devs. For devs. Still devs.",
+          about: "Independent on our own, harmonious together:\npurposeful tools for people who build.",
           url: "coprimal.dev",
         },
       };
