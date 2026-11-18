@@ -4,7 +4,7 @@ Re-renders `../coprimal-poster.png`: a 1200×630 poster (PNG at 2×, 2400×1260)
 
 `poster.html` holds everything:
 
-- Copy: the `STR` table (`en` only): "Coprimal" (wordmark, cased as in the brand lockup), "By devs. For devs. Still devs.", the about line "Independent on our own, harmonious together: purposeful tools for people who build." (two lines, broken at the colon) and "coprimal.dev".
+- Copy: the `STR` table (`en` only): "Coprimal" (wordmark, cased as in the brand lockup), "By devs. For devs. Still devs.", the about line "We build free, open source apps and materials so solo devs can keep loving being devs in the AI era." (two lines, broken after "materials") and "coprimal.dev".
 - Colors: the brand palette as CSS variables on `:root` (Deep Navy `#11376e`, Bright Navy `#225db4`, Sky `#73a7e8`, Mist `#eaf3ff`).
 - Font: Lato 700 (wordmark, URL) and 400 (tagline), loaded from Google Fonts (needs network).
 - Assets, copied from the repo's `assets/` into `source/assets/`:
