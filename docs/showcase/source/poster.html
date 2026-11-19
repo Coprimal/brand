@@ -95,6 +95,45 @@
         letter-spacing: 0.08em;
         color: var(--mist);
       }
+      /* The apps, as on coprimal.dev's tool cards, on a 4×4 shelf over the waves, centred on the text block
+         (lockup top 170 → about bottom ≈ 443). The last slot is always "+": more apps than the shelf shows. */
+      .apps {
+        position: absolute;
+        right: 96px;
+        top: 112px;
+        display: grid;
+        grid-template-columns: repeat(4, 84px);
+        grid-auto-rows: 84px;
+        gap: 18px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      /* One Mist plate behind every icon: on a faint frosted slot the blue icons and face-grouper's
+         line drawing sank into the light wave at link-preview size (600×315) */
+      .apps li {
+        display: grid;
+        place-items: center;
+        border-radius: 20px;
+        background: rgb(234 243 255 / 0.88);
+      }
+      /* The icons are 160 px: 64 CSS px keeps them sharp in the 2× PNG; non-square ones keep their ratio */
+      .apps img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        display: block;
+      }
+      .apps .more {
+        background: none;
+      }
+      .apps .more svg {
+        width: 84px;
+        height: 84px;
+        display: block;
+        fill: none;
+        stroke: var(--mist);
+      }
     </style>
   </head>
   <body>
@@ -106,6 +145,31 @@
       <p class="tagline" data-k="tagline"></p>
       <p class="about" data-k="about"></p>
       <p class="url" data-k="url"></p>
+      <!-- coprimal.dev's tools in site order (its index.html), icons from its assets/projects/ -->
+      <ul class="apps">
+        <li><img src="assets/apps/histq-icon.png" alt="Histq" /></li>
+        <li><img src="assets/apps/dblore-icon.png" alt="Dblore" /></li>
+        <li><img src="assets/apps/dotlore-icon.png" alt="Dotlore" /></li>
+        <li><img src="assets/apps/echodiar-icon.png" alt="EchoDiar" /></li>
+        <li><img src="assets/apps/popguy-icon.png" alt="PopGuy" /></li>
+        <li><img src="assets/apps/memlore-icon.png" alt="Memlore" /></li>
+        <li><img src="assets/apps/xpense-icon.png" alt="Xpense" /></li>
+        <li><img src="assets/apps/codingfriend-icon.png" alt="Coding Friend" /></li>
+        <li><img src="assets/apps/facegrouper-icon.png" alt="face-grouper" /></li>
+        <li><img src="assets/apps/cmdtab-icon.png" alt="CmdTab" /></li>
+        <li><img src="assets/apps/simplemapper-icon.png" alt="SimpleMapper" /></li>
+        <li><img src="assets/apps/opendisplay-icon.png" alt="OpenDisplay" /></li>
+        <li><img src="assets/apps/fastmoji-icon.png" alt="FastMoji" /></li>
+        <li><img src="assets/apps/segdown-icon.png" alt="SegDown" /></li>
+        <li><img src="assets/apps/quickclear-icon.png" alt="Quick Clear" /></li>
+        <!-- "and more": the dashed "+" of coprimal.dev's "Your tool here" card -->
+        <li class="more" aria-label="and more">
+          <svg viewBox="0 0 84 84" aria-hidden="true">
+            <rect x="1" y="1" width="82" height="82" rx="19" stroke-width="2" stroke-dasharray="6 6" stroke-opacity="0.6" />
+            <path d="M42 29v26M29 42h26" stroke-width="4" stroke-linecap="round" />
+          </svg>
+        </li>
+      </ul>
     </div>
     <script>
       /* Copy: wordmark cased as in the brand lockup; tagline, about line and URL as given by the user. */
@@ -136,16 +200,25 @@
         await Promise.all([
           bg.decode(),
           document.getElementById("symbol").decode(),
+          ...[...document.querySelectorAll(".apps img")].map((img) => img.decode()),
           ...FONTS.map(({ family, weight }) =>
             document.fonts.load(`${weight} 64px "${family}"`, FONT_SAMPLE),
           ),
         ]);
         await document.fonts.ready;
         const frame = document.getElementById("frame").getBoundingClientRect();
-        for (const el of document.querySelectorAll(".lockup, [data-k]")) {
+        for (const el of document.querySelectorAll(".lockup, [data-k], .apps")) {
           const b = el.getBoundingClientRect();
           if (b.left < frame.left || b.right > frame.right || b.top < frame.top || b.bottom > frame.bottom)
             console.warn(`poster: "${el.className}" overflows the frame`);
+        }
+        /* The shelf keeps clear of the text by at least the mark's clear space (a quarter of its width) */
+        const apps = document.querySelector(".apps").getBoundingClientRect();
+        const clear = document.getElementById("symbol").getBoundingClientRect().width / 4;
+        for (const el of document.querySelectorAll(".lockup, [data-k]")) {
+          const b = el.getBoundingClientRect(); /* absolutely positioned, so it wraps its text */
+          if (b.left < apps.right + clear && b.right > apps.left - clear && b.top < apps.bottom + clear && b.bottom > apps.top - clear)
+            console.warn(`poster: "${el.className}" is within ${clear}px of the apps`);
         }
       })();
       window.__showcase = { ready, width: 1200, height: 630, fonts: FONTS, fontSample: FONT_SAMPLE, lang: LANG };
